@@ -19,6 +19,7 @@ import Post from "./dashboardLinks/post/Post";
 import Profile from "./dashboardLinks/profile/Profile";
 import AcademicDetails from "./dashboardLinks/academicdetails/AcademicDetails";
 import ManageGroups from "./dashboardLinks/manageGroups/ManageGroups";
+import CreateUsers from "./dashboardLinks/createUsers/CreateUsers";
 import Logs from "./dashboardLinks/logs/Logs";
 
 import { getAllChat, logoutChats } from "../../../actions/chat";
@@ -147,6 +148,7 @@ const MentorDashboard = () => {
         chat: false,
         academicDetails: false,
         manageGroups: false,
+        createUsers: false,
         logs: false,
         meetings: false,
         allInteractions: role === Roles.ADMIN ? true : false,
@@ -368,6 +370,22 @@ const MentorDashboard = () => {
                     chat: false,
                     academicDetails: false,
                     manageGroups: true,
+                    createUsers: false,
+                    logs: false,
+                    meetings: false,
+                    allInteractions: false,
+                });
+                break;
+            case "createUsers":
+                setRoute({
+                    home: false,
+                    post: false,
+                    menteeInfo: false,
+                    profile: false,
+                    chat: false,
+                    academicDetails: false,
+                    manageGroups: false,
+                    createUsers: true,
                     logs: false,
                     meetings: false,
                     allInteractions: false,
@@ -473,17 +491,30 @@ const MentorDashboard = () => {
                                 {role === Roles.ADMIN && <h1>Admin</h1>}
                             </div>
                             {role === Roles.ADMIN && (
-                                <button
-                                    id="manageGroups"
-                                    onClick={handleRouteChange}
-                                    className={`flex items-center justify-between text-left bg-blue-600 hover:bg-blue-800 text-white mt-5 mb-9 ml-8 mr-8 pt-3 pb-3 pl-8 pr-8 rounded-md`}
-                                >
-                                    Manage groups
-                                    <Plus
-                                        alt={true}
-                                        myStyle={"h-6 w-6 text-white pointer-events-none"}
-                                    />
-                                </button>
+                                <>
+                                    <button
+                                        id="manageGroups"
+                                        onClick={handleRouteChange}
+                                        className={`flex items-center justify-between text-left bg-blue-600 hover:bg-blue-800 text-white mt-5 mb-9 ml-8 mr-8 pt-3 pb-3 pl-8 pr-8 rounded-md`}
+                                    >
+                                        Manage groups
+                                        <Plus
+                                            alt={true}
+                                            myStyle={"h-6 w-6 text-white pointer-events-none"}
+                                        />
+                                    </button>
+                                    <button
+                                        onClick={handleRouteChange}
+                                        id="createUsers"
+                                        className={`flex items-center justify-between text-left bg-blue-600 hover:bg-blue-800 text-white mt-5 mb-9 ml-8 mr-8 pt-3 pb-3 pl-8 pr-8 rounded-md`}
+                                    >
+                                        Create Users
+                                        <Plus
+                                            alt={true}
+                                            myStyle={"h-6 w-6 text-white pointer-events-none"}
+                                        />
+                                    </button>
+                                </>
                             )}
                             {role !== Roles.ADMIN && (
                                 <button
@@ -776,6 +807,7 @@ const MentorDashboard = () => {
                                     />
                                 )}
                                 {route.manageGroups && <ManageGroups />}
+                                {route.createUsers && <CreateUsers />}
                                 {route.logs && <Logs />}
                                 {route.meetings && <Meetings />}
                                 {route.allInteractions && <AdminInteractions />}

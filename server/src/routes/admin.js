@@ -32,11 +32,29 @@ router.post(
     Logger(events.GROUP_UPDATE)
 );
 
-// assign mentees 
+// assign mentees
 router.post("/assignMentees", Auth, Authorize(Role.Admin), adminController.assignMentees, Logger(events.GROUP_UPDATE));
 
-// assign mentees 
+// assign mentees
 router.post("/removeMentees", Auth, Authorize(Role.Admin), adminController.removeMentees, Logger(events.GROUP_UPDATE));
+
+// create mentor
+router.post("/createMentor", Auth, Authorize(Role.Admin), adminController.createMentor);
+
+// delete mentor
+router.delete("/deleteMentor", Auth, Authorize(Role.Admin), adminController.deleteMentor);
+
+// update mentor credentials
+router.patch("/updateMentorCredentials", Auth, Authorize(Role.Admin), adminController.updateMentorCredentials);
+
+// create student
+router.post("/createStudent", Auth, Authorize(Role.Admin), adminController.createStudent);
+
+// delete student
+router.delete("/deleteStudent", Auth, Authorize(Role.Admin), adminController.deleteStudent);
+
+// update student credentials
+router.patch("/updateStudentCredentials", Auth, Authorize(Role.Admin), adminController.updateStudentCredentials);
 
 // get admin profile route
 router.get("/profile", Auth, Authorize(Role.Admin), adminController.getProfile);

@@ -39,3 +39,33 @@ export const banUser = (id) =>
     API.patch("/admin/banUser", { id: id }).catch((error) => {
         return error.response;
     });
+
+export const createMentor = (mentorData) =>
+    API.post("/admin/createMentor", mentorData).catch((error) => {
+        return error.response;
+    });
+
+export const deleteMentor = (mentorId) =>
+    API.delete("/admin/deleteMentor", { data: { id: mentorId } }).catch((error) => {
+        return error.response;
+    });
+
+export const updateMentorCredentials = (mentorData) =>
+    API.patch("/admin/updateMentorCredentials", mentorData).catch((error) => {
+        return error.response;
+    });
+
+export const createStudent = (studentData) =>
+    API.post("/admin/createStudent", studentData).catch((error) => {
+        return error.response;
+    });
+
+export const deleteStudent = (studentId) =>
+    API.delete("/admin/deleteStudent", { data: { id: studentId } }).catch((error) => {
+        return error.response;
+    });
+
+export const updateStudentCredentials = (studentData) =>
+    API.patch("/admin/updateStudentCredentials", studentData).catch((error) => {
+        return error.response;
+    });

@@ -17,9 +17,6 @@ const events = require("../utils/logEvents");
 // mentor login
 router.post("/login", mentorController.mentorLoginHandler, Logger(events.LOGIN));
 
-// mentor signup
-router.post("/signup", mentorController.mentorSignupHandler, Logger(events.SIGNUP));
-
 // mentor dashboard
 router.get("/dashboard", Auth, Authorize(Role.Mentor), mentorController.mentorDashboardHandler);
 

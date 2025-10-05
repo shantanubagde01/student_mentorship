@@ -20,9 +20,6 @@ const upload = require("../config/multer");
 // student login
 router.post("/login", studentController.studentLoginHandler, Logger(events.LOGIN));
 
-// student signup
-router.post("/signup", studentController.studentSignupHandler, Logger(events.SIGNUP));
-
 // student dashboard
 router.get("/dashboard", Auth, Authorize(Role.Student), studentController.studentDashboardHandler);
 

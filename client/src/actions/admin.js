@@ -47,6 +47,98 @@ export const adminGetMentorMentee = () => async (dispatch) => {
     }
 };
 
+export const adminCreateMentor = (mentorData) => async (dispatch) => {
+    try {
+        const response = await api.createMentor(mentorData);
+        const data = response && response.data ? response.data : response;
+        console.log("adminCreateMentor response data:", data);
+        if (data && data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Mentor created successfully", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", (data && data.msg) || "Failed to create mentor", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log("adminCreateMentor error:", error);
+    }
+};
+
+export const adminDeleteMentor = (mentorId) => async (dispatch) => {
+    try {
+        const { data } = await api.deleteMentor(mentorId);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Mentor deleted successfully", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg || "Failed to delete mentor", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const adminUpdateMentorCredentials = (mentorData) => async (dispatch) => {
+    try {
+        const { data } = await api.updateMentorCredentials(mentorData);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Mentor credentials updated", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg || "Failed to update mentor credentials", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const adminCreateStudent = (studentData) => async (dispatch) => {
+    try {
+        const { data } = await api.createStudent(studentData);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Student created successfully", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg || "Failed to create student", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const adminDeleteStudent = (studentId) => async (dispatch) => {
+    try {
+        const { data } = await api.deleteStudent(studentId);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Student deleted successfully", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg || "Failed to delete student", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const adminUpdateStudentCredentials = (studentData) => async (dispatch) => {
+    try {
+        const { data } = await api.updateStudentCredentials(studentData);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", "Student credentials updated", 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg || "Failed to update student credentials", 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const adminAssignMentees = (groupData) => async (dispatch) => {
     try {
         const { data } = await api.assignMentees(groupData);

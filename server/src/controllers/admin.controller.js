@@ -45,6 +45,194 @@ module.exports = {
         }
     },
 
+    // Create a new mentor
+    createMentor: async (req, res, next) => {
+        try {
+            const { email, password, firstname, lastname, middlename, department, designation } = req.body;
+
+            console.log("createMentor request body:", req.body);
+
+            if (!email || !password || !firstname) {
+                console.log("createMentor missing required fields");
+                return response.badrequest(res, "Missing required fields");
+            }
+
+            const existingMentor = await Mentor.findOne({ email });
+            if (existingMentor) {
+                console.log("createMentor mentor already exists with email:", email);
+                return response.error(res, "Mentor with this email already exists");
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 8);
+
+            const mentor = new Mentor({
+                email,
+                password: hashedPassword,
+                firstname,
+                lastname,
+                middlename: middlename || "",
+                department,
+                designation,
+                isEmailVerified: true,
+            });
+
+            await mentor.save();
+            console.log("createMentor mentor saved:", mentor);
+            response.success(res, "Mentor created successfully", { mentor });
+            next();
+        } catch (err) {
+            console.log("createMentor error:", err);
+            response.error(res);
+        }
+    },
+
+    // Delete a mentor by ID
+    deleteMentor: async (req, res, next) => {
+        try {
+            const { id } = req.body;
+            if (!id) {
+                return response.badrequest(res, "Mentor ID is required");
+            }
+
+            const mentor = await Mentor.findByIdAndDelete(id);
+            if (!mentor) {
+                return response.notfound(res, "Mentor not found");
+            }
+
+            response.success(res, "Mentor deleted successfully");
+            next();
+        } catch (err) {
+            console.log(err);
+            response.error(res);
+        }
+    },
+
+    // Update mentor credentials (email/password)
+    updateMentorCredentials: async (req, res, next) => {
+        try {
+            const { id, email, password } = req.body;
+            if (!id) {
+                return response.badrequest(res, "Mentor ID is required");
+            }
+
+            const mentor = await Mentor.findById(id);
+            if (!mentor) {
+                return response.notfound(res, "Mentor not found");
+            }
+
+            if (email) {
+                const existingMentor = await Mentor.findOne({ email });
+                if (existingMentor && existingMentor._id.toString() !== id) {
+                    return response.error(res, "Email already in use");
+                }
+                mentor.email = email;
+            }
+
+            if (password) {
+                mentor.password = await bcrypt.hash(password, 8);
+            }
+
+            await mentor.save();
+            response.success(res, "Mentor credentials updated", { mentor });
+            next();
+        } catch (err) {
+            console.log(err);
+            response.error(res);
+        }
+    },
+
+    // Create a new student
+    createStudent: async (req, res, next) => {
+        try {
+            const { email, password, firstname, lastname, middlename, enrollment_no, semester, department } = req.body;
+
+            if (!email || !password || !firstname || !semester || !enrollment_no) {
+                return response.badrequest(res, "Missing required fields");
+            }
+
+            const existingStudent = await Student.findOne({ email });
+            if (existingStudent) {
+                return response.error(res, "Student with this email already exists");
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 8);
+
+            const student = new Student({
+                email,
+                password: hashedPassword,
+                firstname,
+                lastname,
+                middlename: middlename || "",
+                enrollment_no,
+                semester,
+                department,
+                isEmailVerified: true,
+            });
+
+            await student.save();
+            response.success(res, "Student created successfully", { student });
+            next();
+        } catch (err) {
+            console.log(err);
+            response.error(res);
+        }
+    },
+
+    // Delete a student by ID
+    deleteStudent: async (req, res, next) => {
+        try {
+            const { id } = req.body;
+            if (!id) {
+                return response.badrequest(res, "Student ID is required");
+            }
+
+            const student = await Student.findByIdAndDelete(id);
+            if (!student) {
+                return response.notfound(res, "Student not found");
+            }
+
+            response.success(res, "Student deleted successfully");
+            next();
+        } catch (err) {
+            console.log(err);
+            response.error(res);
+        }
+    },
+
+    // Update student credentials (email/password)
+    updateStudentCredentials: async (req, res, next) => {
+        try {
+            const { id, email, password } = req.body;
+            if (!id) {
+                return response.badrequest(res, "Student ID is required");
+            }
+
+            const student = await Student.findById(id);
+            if (!student) {
+                return response.notfound(res, "Student not found");
+            }
+
+            if (email) {
+                const existingStudent = await Student.findOne({ email });
+                if (existingStudent && existingStudent._id.toString() !== id) {
+                    return response.error(res, "Email already in use");
+                }
+                student.email = email;
+            }
+
+            if (password) {
+                student.password = await bcrypt.hash(password, 8);
+            }
+
+            await student.save();
+            response.success(res, "Student credentials updated", { student });
+            next();
+        } catch (err) {
+            console.log(err);
+            response.error(res);
+        }
+    },
+
     // admin dashboard handler function
     adminDashboardHandler: (req, res, next) => {
         response.success(res, "", { user: req.user });

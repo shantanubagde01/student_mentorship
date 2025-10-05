@@ -111,7 +111,7 @@ mentorSchema.methods.generateAuthToken = async function () {
     const mentor = this;
     const token = jwt.sign({ _id: mentor._id.toString(), role: "Mentor" }, process.env.JWT_SECRET);
     // admin.tokens = admin.tokens.concat({ token });
-    mentor.tokens = { token };
+    mentor.tokens = mentor.tokens.concat({ token });
     await mentor.save();
     return token;
 };
