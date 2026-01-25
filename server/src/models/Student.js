@@ -20,9 +20,18 @@ const studentSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        firstname: String,
-        middlename: String,
-        lastname: String,
+        firstname: {
+            type: String,
+            default: "" // Fixed: Prevents "undefined"
+        },
+        middlename: {
+            type: String,
+            default: "" // Fixed: Prevents "undefined"
+        },
+        lastname: {
+            type: String,
+            default: "" // Fixed: Prevents "undefined"
+        },
         phone_no: String,
         gender: String,
         blood_group: String,
@@ -128,7 +137,7 @@ studentSchema.methods.generateAuthToken = async function () {
 };
 
 /**
- *   Model.Statics methods are available on the Model itself.  **/
+ * Model.Statics methods are available on the Model itself.  **/
 //custom login method for mentor
 studentSchema.statics.findByCredentials = async (email, password) => {
     const student = await Student.findOne({ email });

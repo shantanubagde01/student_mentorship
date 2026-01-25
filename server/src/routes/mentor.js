@@ -7,6 +7,9 @@ const mentorController = require("../controllers/mentor.controller");
 const Logger = require("../middlewares/logger");
 const events = require("../utils/logEvents");
 
+// importing multer config
+const upload = require("../config/multer");
+
 /** All Mentor routes are in this file
  *  For protected routes we are passing the Authorize middleware to check if the user
  *  is authorized to perform the operation/action.
@@ -38,7 +41,7 @@ router.get(
 );
 
 // update profile;
-router.post("/profile", Auth, Authorize(Role.Mentor), mentorController.updateProfile);
+router.post("/profile", Auth, Authorize(Role.Mentor), upload.single("avatar"), mentorController.updateProfile);
 
 // get profile
 router.get("/profile", Auth, Authorize(Role.Mentor), mentorController.getProfile);

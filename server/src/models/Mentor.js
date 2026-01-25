@@ -17,10 +17,12 @@ const mentorSchema = new mongoose.Schema(
         middlename: {
             type: String,
             trim: true,
+            default: "", // Fixed: Prevents "undefined" string
         },
         lastname: {
             type: String,
             trim: true,
+            default: "", // Fixed: Prevents "undefined" string
         },
         email: {
             type: String,
@@ -117,7 +119,7 @@ mentorSchema.methods.generateAuthToken = async function () {
 };
 
 /**
- *   Model.Statics methods are available on the Model itself.  **/
+ * Model.Statics methods are available on the Model itself.  **/
 //custom login method for mentor
 mentorSchema.statics.findByCredentials = async (email, password) => {
     const mentor = await Mentor.findOne({ email });

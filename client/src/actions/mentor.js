@@ -121,6 +121,7 @@ export const mentorUpdateProfile = (history, formData) => async (dispatch) => {
         if (data.code === 200) {
             const profile = data.data.profileData;
             dispatch({ type: "FETCH_MENTOR_PROFILE", profile });
+            showToast("success", "Profile updated successfully", 3000, toast.POSITION.TOP_RIGHT);
         } else {
             showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }

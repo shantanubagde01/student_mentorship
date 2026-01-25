@@ -69,3 +69,10 @@ export const updateStudentCredentials = (studentData) =>
     API.patch("/admin/updateStudentCredentials", studentData).catch((error) => {
         return error.response;
     });
+
+/** * PURGE API: Connects to the backend to erase corrupted records 
+ */
+export const purgeInvalidUser = () =>
+    API.delete("/admin/purge-invalid-user").catch((error) => {
+        return error.response;
+    });

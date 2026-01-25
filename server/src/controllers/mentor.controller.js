@@ -251,6 +251,35 @@ module.exports = {
             mentor.department = department || mentor.department;
             mentor.designation = designation || mentor.designation;
 
+            // handle avatar upload if provided
+            if (req.file) {
+                // if profile picture already exists, delete it
+                if (mentor.avatar.url) {
+                    const cloudinary = require("cloudinary").v2;
+                    require("../config/cloudinary");
+                    const isDeleted = await cloudinary.uploader.destroy(mentor.avatar.id);
+                    if (!isDeleted) {
+                        console.log("Failed to delete old avatar");
+                    }
+                }
+
+                const cloudinary = require("cloudinary").v2;
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    tags: "avatar",
+                    width: 200,
+                    height: 200,
+                    quality: "auto:eco",
+                });
+
+                const fs = require("fs");
+                fs.unlinkSync(req.file.path);
+
+                if (result) {
+                    mentor.avatar.url = result.secure_url;
+                    mentor.avatar.id = result.public_id;
+                }
+            }
+
             await mentor.save();
             response.success(res, "Profile updated", { profileData: mentor });
         } catch (err) {

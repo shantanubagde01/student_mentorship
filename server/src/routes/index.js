@@ -1,3 +1,4 @@
+require('dotenv').config(); // This must be the first line!
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/auth");
@@ -6,11 +7,15 @@ const roles = require("../utils/roles");
 const Logger = require("../middlewares/logger");
 const events = require("../utils/logEvents");
 
-// importing contollers/handlers
+// importing controllers/handlers
 const indexController = require("../controllers/index.controller");
-const interactionsControler = require("../controllers/interaction.controller");
+const interactionsController = require("../controllers/interaction.controller");
+const aiChatController = require("../controllers/aiChat.controller"); 
 
-/**   This file consists all the routes shared by all users of the system   */
+/** This file consists of all the routes shared by all users of the system   */
+
+// AI Assistant Route
+router.post("/ai-assistant", Auth, aiChatController.chatWithAI);
 
 // importing multer config
 const upload = require("../config/multer");

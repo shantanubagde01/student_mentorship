@@ -31,7 +31,11 @@ export const getProfile = () =>
     });
 
 export const updateProfile = (data) =>
-    API.post(`/mentor/profile`, data).catch((error) => {
+    API.post(`/mentor/profile`, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }).catch((error) => {
         return error.response;
     });
 

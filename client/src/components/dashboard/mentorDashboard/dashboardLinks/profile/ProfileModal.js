@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { mentorUpdateProfile } from "../../../../../actions/mentor";
+import Resizer from "react-image-file-resizer";
 
 const ProfileModal = ({
     nodeRef,
@@ -16,16 +17,45 @@ const ProfileModal = ({
     // state to control the disabled state of the update button
     const [disable, setDisable] = useState(true);
 
+    // state for avatar file
+    const [avatar, setAvatar] = useState(null);
+
     // function to handle modal actions
     const handleModalActions = () => {
         setShowOverlay(false);
         setShowEditModal(false);
     };
 
+    // function to resize image
+    const resizeFile = (file) =>
+        new Promise((resolve) => {
+            Resizer.imageFileResizer(
+                file, // Is the file of the image which will resized.
+                200, //Is the maxWidth of the resized new image.
+                200, // Is the maxHeight of the resized new image.
+                "JPEG", // Is the compressFormat of the resized new image. (JPEG, PNG or WEBP)
+                90, // Is the quality of the resized new image. (0-100)
+                0, // Is the degree of clockwise rotation. (0, 90, 180, 270, 360)
+                (uri) => resolve(uri), // Is the callBack function of the resized new image URI.
+                "file" // Is the output type of the resized new image. (file, base64 or blob)
+            );
+        });
+
     // function to handle submit
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(mentorUpdateProfile(history, mentorProfileData));
+        const formData = new FormData();
+        formData.append("firstname", mentorProfileData.firstname);
+        formData.append("middlename", mentorProfileData.middlename);
+        formData.append("lastname", mentorProfileData.lastname);
+        formData.append("phone", mentorProfileData.phone);
+        formData.append("address", mentorProfileData.address);
+        formData.append("department", mentorProfileData.department);
+        formData.append("designation", mentorProfileData.designation);
+        if (avatar) {
+            formData.append("avatar", avatar);
+        }
+        dispatch(mentorUpdateProfile(history, formData));
         handleModalActions();
     };
 
@@ -163,6 +193,29 @@ const ProfileModal = ({
                                         onChange={handleChange}
                                     />
                                 </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-start justify-center">
+                            <h4 className="mb-2 font-bold">Profile Picture</h4>
+                            <div className="flex flex-col mb-3">
+                                <label htmlFor="avatar" className="mb-2">
+                                    Upload a new profile picture (optional)
+                                </label>
+                                <input
+                                    id="avatar"
+                                    type="file"
+                                    name="avatar"
+                                    className="rounded-lg border-gray-300"
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    onChange={async (e) => {
+                                        if (e.target.files && e.target.files[0]) {
+                                            const file = e.target.files[0];
+                                            const resizedFile = await resizeFile(file);
+                                            setAvatar(resizedFile);
+                                            setDisable(false);
+                                        }
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className="w-full flex items-center justify-end">

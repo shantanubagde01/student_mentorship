@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import * as api from "../api/admin";
-import { getLogs } from "../api/logs";
 import { showToast } from "../components/toast/toast";
 
+// Admin Sign In
 export const adminSignIn = (fields, history) => async (dispatch) => {
     try {
         const { data } = await api.signIn(fields);
@@ -17,11 +17,10 @@ export const adminSignIn = (fields, history) => async (dispatch) => {
     }
 };
 
+// Get Admin Details
 export const adminGetDetails = () => async (dispatch) => {
     try {
         const { data } = await api.fetchAdmin();
-        console.log("admin data in actions", data);
-
         if (data.code === 200) {
             return dispatch({ type: "FETCH_ADMIN", data });
         } else {
@@ -32,11 +31,10 @@ export const adminGetDetails = () => async (dispatch) => {
     }
 };
 
+// Get all Mentors and Mentees
 export const adminGetMentorMentee = () => async (dispatch) => {
     try {
         const { data } = await api.fetchMentorMentee();
-        console.log("Mentor Mentee data in actions", data);
-
         if (data.code === 200) {
             dispatch({ type: "FETCH_MENTOR_MENTEE", data });
         } else {
@@ -47,20 +45,73 @@ export const adminGetMentorMentee = () => async (dispatch) => {
     }
 };
 
+// --- FIX: Added adminFetchLogs for Logs.js component ---
+export const adminFetchLogs = () => async (dispatch) => {
+    try {
+        const { data } = await api.fetchLogs();
+        if (data.code === 200) {
+            dispatch({ type: "FETCH_LOGS", data: data.data });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// --- FIX: Added adminAssignMentees for ManageGroups.js component ---
+export const adminAssignMentees = (groupData) => async (dispatch) => {
+    try {
+        const { data } = await api.assignMentees(groupData);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", data.msg, 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// --- FIX: THE PURGE ACTION for John undefined Doe ---
+export const runDatabasePurge = () => async (dispatch) => {
+    try {
+        const { data } = await api.purgeInvalidUser();
+        if (data.code === 200) {
+            showToast("success", "John undefined Doe erased!", 5000, toast.POSITION.BOTTOM_LEFT);
+            dispatch(adminGetMentorMentee());
+        } else {
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+    } catch (error) {
+        console.error("Purge failed:", error);
+    }
+};
+
+export const adminRemoveMentees = (groupData) => async (dispatch) => {
+    try {
+        const { data } = await api.removeMentees(groupData);
+        if (data.code === 200) {
+            dispatch(adminGetMentorMentee());
+            showToast("success", data.msg, 3000, toast.POSITION.BOTTOM_LEFT);
+        } else {
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const adminCreateMentor = (mentorData) => async (dispatch) => {
     try {
-        const response = await api.createMentor(mentorData);
-        const data = response && response.data ? response.data : response;
-        console.log("adminCreateMentor response data:", data);
-        if (data && data.code === 200) {
+        const { data } = await api.createMentor(mentorData);
+        if (data.code === 200) {
             dispatch(adminGetMentorMentee());
             showToast("success", "Mentor created successfully", 3000, toast.POSITION.BOTTOM_LEFT);
         } else {
-            showToast("error", (data && data.msg) || "Failed to create mentor", 10000, toast.POSITION.BOTTOM_LEFT);
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }
-        return data;
     } catch (error) {
-        console.log("adminCreateMentor error:", error);
+        console.log(error);
     }
 };
 
@@ -71,9 +122,8 @@ export const adminDeleteMentor = (mentorId) => async (dispatch) => {
             dispatch(adminGetMentorMentee());
             showToast("success", "Mentor deleted successfully", 3000, toast.POSITION.BOTTOM_LEFT);
         } else {
-            showToast("error", data.msg || "Failed to delete mentor", 10000, toast.POSITION.BOTTOM_LEFT);
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }
-        return data;
     } catch (error) {
         console.log(error);
     }
@@ -101,9 +151,8 @@ export const adminCreateStudent = (studentData) => async (dispatch) => {
             dispatch(adminGetMentorMentee());
             showToast("success", "Student created successfully", 3000, toast.POSITION.BOTTOM_LEFT);
         } else {
-            showToast("error", data.msg || "Failed to create student", 10000, toast.POSITION.BOTTOM_LEFT);
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }
-        return data;
     } catch (error) {
         console.log(error);
     }
@@ -116,9 +165,8 @@ export const adminDeleteStudent = (studentId) => async (dispatch) => {
             dispatch(adminGetMentorMentee());
             showToast("success", "Student deleted successfully", 3000, toast.POSITION.BOTTOM_LEFT);
         } else {
-            showToast("error", data.msg || "Failed to delete student", 10000, toast.POSITION.BOTTOM_LEFT);
+            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }
-        return data;
     } catch (error) {
         console.log(error);
     }
@@ -139,14 +187,11 @@ export const adminUpdateStudentCredentials = (studentData) => async (dispatch) =
     }
 };
 
-export const adminAssignMentees = (groupData) => async (dispatch) => {
+export const adminGetInteractions = (history, setInteractions) => async (dispatch) => {
     try {
-        const { data } = await api.assignMentees(groupData);
-        console.log("assign mentess data in actions", data);
-
+        const { data } = await api.getInteractions();
         if (data.code === 200) {
-            dispatch(adminGetMentorMentee());
-            showToast("success", data.msg, 3000, toast.POSITION.BOTTOM_LEFT);
+            setInteractions(data.data.interactions);
         } else {
             showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
         }
@@ -155,31 +200,12 @@ export const adminAssignMentees = (groupData) => async (dispatch) => {
     }
 };
 
-export const adminRemoveMentees = (groupData) => async (dispatch) => {
+export const adminBanUser = (id) => async (dispatch) => {
     try {
-        const { data } = await api.removeMentees(groupData);
-        console.log("remove mentess data in actions", data);
-
+        const { data } = await api.banUser(id);
         if (data.code === 200) {
             dispatch(adminGetMentorMentee());
-            showToast("success", data.msg, 3000, toast.POSITION.BOTTOM_LEFT);
-        } else {
-            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-export const adminFetchLogs = () => async (dispatch) => {
-    try {
-        const { data } = await getLogs();
-        console.log("logs data in actions", data);
-
-        if (data.code === 200) {
-            dispatch({ type: "FETCH_LOGS", data });
-        } else {
-            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
+            showToast("success", data.msg, 2000, toast.POSITION.BOTTOM_LEFT);
         }
     } catch (error) {
         console.log(error);
@@ -189,37 +215,6 @@ export const adminFetchLogs = () => async (dispatch) => {
 export const logoutAdmin = () => async (dispatch) => {
     try {
         dispatch({ type: "LOGOUT_ADMIN" });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-export const adminBanUser = (id) => async (dispatch) => {
-    try {
-        const { data } = await api.banUser(id);
-        console.log("ban user data in actions", data);
-
-        if (data.code === 200) {
-            dispatch(adminGetMentorMentee());
-            showToast("success", data.msg, 2000, toast.POSITION.BOTTOM_LEFT);
-        } else {
-            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-export const adminGetInteractions = (history, setInteractions) => async (dispatch) => {
-    try {
-        const { data } = await api.getInteractions();
-        console.log("interactions data in actions", data);
-
-        if (data.code === 200) {
-            setInteractions(data.data.interactions);
-        } else {
-            showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
-        }
     } catch (error) {
         console.log(error);
     }
