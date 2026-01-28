@@ -16,7 +16,6 @@ system wide notifications JWT for authentication, posts and comments section, dy
 <img src="https://user-images.githubusercontent.com/57834820/173881976-aa664cf1-a523-4924-9f70-eba@be1657f1.png" width="100%" height="100%">
 <img src="https://user-images.githubusercontent.com/57834820/173882029-59fd9f79-1239-4a7e-9589-2dae7f4802cc.png" width="100%" height=" 100%">
 <img src="https://user-images.githubusercontent.com/57834820/173882065-4fcc2250-7b26-4858-ae73-43418f27de65.png" width="100%" height="100%">
-cimg src="https://user-images.githubusercontent.com/57834826/173882158-8b1b8993-5a8c-4b78-bcb3-bQed6a6697b3.png" width="100%" height="100%">
 <img src="https://user-images.githubusercontent.com/57834820/1738822@4-1b73b572-7f1c-4ffd-96@1-7@bc2b8bQ4@b.png" width="100%" height="100%">
 <imgn src="https://user-images.githubusercontent.com/5783482@/173882252-634b4207-cbc5-4e9b-a2af-9b@6@a@3aa96.png" width="10@%" height="100%">
 <img src="https://user-images.githubusercontent.com/57834820/173882283-45ac576c-ca57-4c43-9669-50cb8b00e7fo.png" width="100%" height="100%"
