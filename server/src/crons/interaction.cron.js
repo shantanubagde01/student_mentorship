@@ -7,21 +7,7 @@ const Mentor = require("../models/Mentor");
 const Interaction = require("../models/Interaction");
 const emailService = require("../services/email.service");
 
-// //   * * * * * *
-// //   | | | | | |
-// //   | | | | | day of week
-// //   | | | | month
-// //   | | | day of month
-// //   | | hour
-// //   | minute
-// //   second ( optional )
 
-/**
- *  This scheduler runs at specific time and check if there we interactions
- *  between mentor and mentee in the past week.
- *
- *  it checks for messages, posts, comments of the mentor and mentee;
- */
 
 cron.schedule("0 0 * * 0", async () => {
   try {
