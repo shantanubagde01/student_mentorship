@@ -6,7 +6,9 @@ const Admin = require('./src/models/Admin');
 
 async function createAdmin() {
   try {
-    await mongoose.connect(process.env.MONGO_DB_URI || 'mongodb://localhost:27017/student_mentoring', {
+    const mongoUri = process.env.MONGO_DB_URI + '/student_mentoring_system';
+    console.log('Connecting to MongoDB...');
+    await mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
