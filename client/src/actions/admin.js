@@ -2,18 +2,20 @@ import { toast } from "react-toastify";
 import * as api from "../api/admin";
 import { showToast } from "../components/toast/toast";
 
-// Admin Sign In
 export const adminSignIn = (fields, history) => async (dispatch) => {
     try {
         const { data } = await api.signIn(fields);
         if (data.code === 200) {
-            dispatch({ type: "SIGN_IN_ADMIN", data });
+            // CRITICAL: This line is what makes the login "stick"
+            localStorage.setItem("authData", JSON.stringify(data.data));
+            
+            dispatch({ type: "SIGN_IN_ADMIN", data: data.data });
             history.push("/admin/dashboard");
         } else {
             showToast("error", data.msg, 10000, toast.POSITION.TOP_RIGHT);
         }
     } catch (error) {
-        console.log(error);
+        console.log("Login Error:", error);
     }
 };
 
@@ -45,7 +47,7 @@ export const adminGetMentorMentee = () => async (dispatch) => {
     }
 };
 
-// --- FIX: Added adminFetchLogs for Logs.js component ---
+// Fetch System Logs
 export const adminFetchLogs = () => async (dispatch) => {
     try {
         const { data } = await api.fetchLogs();
@@ -57,7 +59,7 @@ export const adminFetchLogs = () => async (dispatch) => {
     }
 };
 
-// --- FIX: Added adminAssignMentees for ManageGroups.js component ---
+// Assign Mentees to Mentors
 export const adminAssignMentees = (groupData) => async (dispatch) => {
     try {
         const { data } = await api.assignMentees(groupData);
@@ -72,12 +74,12 @@ export const adminAssignMentees = (groupData) => async (dispatch) => {
     }
 };
 
-// --- FIX: THE PURGE ACTION for John undefined Doe ---
+// DATABASE PURGE: Erases John undefined Doe records
 export const runDatabasePurge = () => async (dispatch) => {
     try {
         const { data } = await api.purgeInvalidUser();
         if (data.code === 200) {
-            showToast("success", "John undefined Doe erased!", 5000, toast.POSITION.BOTTOM_LEFT);
+            showToast("success", "Database Purge Complete: Corrupted records erased!", 5000, toast.POSITION.BOTTOM_LEFT);
             dispatch(adminGetMentorMentee());
         } else {
             showToast("error", data.msg, 10000, toast.POSITION.BOTTOM_LEFT);
@@ -87,6 +89,7 @@ export const runDatabasePurge = () => async (dispatch) => {
     }
 };
 
+// Remove Mentees from Groups
 export const adminRemoveMentees = (groupData) => async (dispatch) => {
     try {
         const { data } = await api.removeMentees(groupData);
@@ -101,6 +104,7 @@ export const adminRemoveMentees = (groupData) => async (dispatch) => {
     }
 };
 
+// Mentor CRUD Operations
 export const adminCreateMentor = (mentorData) => async (dispatch) => {
     try {
         const { data } = await api.createMentor(mentorData);
@@ -144,6 +148,7 @@ export const adminUpdateMentorCredentials = (mentorData) => async (dispatch) => 
     }
 };
 
+// Student CRUD Operations
 export const adminCreateStudent = (studentData) => async (dispatch) => {
     try {
         const { data } = await api.createStudent(studentData);
@@ -187,6 +192,7 @@ export const adminUpdateStudentCredentials = (studentData) => async (dispatch) =
     }
 };
 
+// Statistics and Interactions
 export const adminGetInteractions = (history, setInteractions) => async (dispatch) => {
     try {
         const { data } = await api.getInteractions();
@@ -212,8 +218,11 @@ export const adminBanUser = (id) => async (dispatch) => {
     }
 };
 
+// Admin Logout
 export const logoutAdmin = () => async (dispatch) => {
     try {
+        // Clear session storage upon logout
+        localStorage.clear();
         dispatch({ type: "LOGOUT_ADMIN" });
     } catch (error) {
         console.log(error);

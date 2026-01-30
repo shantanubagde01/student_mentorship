@@ -86,7 +86,7 @@ router.get(
     "/interactions",
     Auth,
     Authorize([roles.Admin, roles.Mentor, roles.Student]),
-    interactionsControler.getAllInteractions
+    // interactionsControler.getAllInteractions
 );
 
 router.get(

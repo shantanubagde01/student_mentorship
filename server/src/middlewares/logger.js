@@ -6,15 +6,19 @@ const Log = require("../models/Log");
  */
 
 const Logger = (event) => {
-    return (req, res, next) => {
-        const newLog = new Log({
-            user: req.user._id,
-            userModel: req.user.role,
-            event_type: event.type,
-            event_detail: event.detail,
-            ip: req.ip,
-        });
-        newLog.save();
+    return async (req, res, next) => {
+        try {
+            const newLog = new Log({
+                user: req.user._id,
+                userModel: req.user.role,
+                event_type: event.type,
+                event_detail: event.detail,
+                ip: req.ip,
+            });
+            await newLog.save();
+        } catch (err) {
+            console.log('Error saving log:', err);
+        }
         next();
     };
 };

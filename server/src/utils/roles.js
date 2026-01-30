@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-    Admin: "Admin",
-    Mentor: "Mentor",
-    Student: "Student",
+    ADMIN: "ADMIN",
+    MENTOR: "MENTOR",
+    STUDENT: "STUDENT",
 };

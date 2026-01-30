@@ -107,7 +107,7 @@ const Auth = ({ location }) => {
     console.log("fields", fields);
 
     // state for the login button dependent on recaptcha
-    const [recaptcha, setRecaptcha] = useState(true);
+    const [recaptcha, setRecaptcha] = useState(false);
 
     // function to handle captcha and send to backend
     const handleCaptchaChange = (val) => {

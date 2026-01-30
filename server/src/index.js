@@ -16,6 +16,36 @@ require("./config/mongoose");
 //env config
 dotenv.config();
 
+// Auto-create admin user if not exists
+const Admin = require("./models/Admin");
+const bcrypt = require("bcryptjs");
+
+const createDefaultAdmin = async () => {
+    try {
+        const existingAdmin = await Admin.findOne({ email: 'admin@example.com' });
+        if (!existingAdmin) {
+            const hashedPassword = await bcrypt.hash('admin123', 8);
+            const admin = new Admin({
+                email: 'admin@example.com',
+                password: hashedPassword,
+                firstname: 'Admin',
+                lastname: 'User',
+                role: 'Admin',
+                isEmailVerified: true,
+            });
+            await admin.save();
+            console.log('Default admin created: admin@example.com / admin123');
+        } else {
+            console.log('Admin user already exists');
+        }
+    } catch (error) {
+        console.error('Error creating default admin:', error);
+    }
+};
+
+// Call after mongoose connects
+setTimeout(createDefaultAdmin, 2000); // Delay to ensure DB connection
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

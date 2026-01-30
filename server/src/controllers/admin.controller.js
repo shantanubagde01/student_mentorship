@@ -23,23 +23,29 @@ dotenv.config();
  */
 
 module.exports = {
-    /** Admin Login Handler */
+/** Admin Login Handler */
     adminLoginHandler: async (req, res, next) => {
         try {
             const { email, password } = req.body;
+            console.log("Login attempt for:", email);
 
             if (!email || !password) {
+                console.log("Missing email or password");
                 return response.badrequest(res, "Please provide valid email/password", {});
             }
 
             const admin = await Admin.findByCredentials(email, password);
+            console.log("Admin found:", admin ? admin.email : "No admin found");
+
             const token = await admin.generateAuthToken();
+            console.log("Token generated:", token ? "Yes" : "No");
+
             response.success(res, "Login successful", { auth_token: token, role: "ADMIN" });
 
             req.user = admin;
             next();
         } catch (err) {
-            console.log(err);
+            console.log("Login error:", err.message);
             response.error(res);
         }
     },
